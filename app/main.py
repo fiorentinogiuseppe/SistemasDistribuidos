@@ -3,6 +3,12 @@ import re
 from flask import Flask, request
 import telegram
 
+import sys
+
+sys.path.insert(1, '..')
+
+from telebot import credentials
+
 TOKEN = os.getenv('BOT_TOKEN')
 URL = os.getenv('URL')
 bot = telegram.Bot(token=TOKEN)
