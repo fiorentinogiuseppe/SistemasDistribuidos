@@ -1,5 +1,6 @@
 apscheduler==3.6.3; python_version >= "3.6"
 asgiref==3.3.4; python_version >= "3.6"
+blinker==1.4
 cachetools==4.2.2; python_version >= "3.6" and python_version < "4.0"
 certifi==2021.5.30; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 cffi==1.14.5; platform_python_implementation == "CPython" and sys_platform == "win32" and (python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6") and implementation_name == "pypy" and python_version >= "3.6"
@@ -31,6 +32,7 @@ pytz==2021.1; python_version >= "3.6"
 pywin32==301; sys_platform == "win32" and python_version >= "3.6"
 pyzmq==22.1.0; python_version >= "3.6"
 requests==2.25.1; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
+sentry-sdk==1.1.0
 six==1.16.0; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.3.0" and python_version >= "3.6"
 starlette==0.14.2; python_version >= "3.6"
 tornado==6.1; python_version >= "3.6"

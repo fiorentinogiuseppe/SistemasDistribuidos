@@ -1,4 +1,5 @@
 import os
+import random
 import re
 from flask import Flask, request
 import telegram
@@ -7,13 +8,26 @@ import sys
 
 sys.path.insert(1, '..')
 
-from telebot import credentials
+from telebot import credentials, ai
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
 
 global bot
 global TOKEN
 TOKEN = os.getenv('BOT_TOKEN')
 URL = os.getenv('URL')
 bot = telegram.Bot(token=TOKEN)
+
+sentry_sdk.init(
+    dsn="https://c8a4639aa2cb4217a5a9c8de5e76e00e@o863874.ingest.sentry.io/5840018",
+    integrations=[FlaskIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
+
 
 app = Flask(__name__)
 
@@ -48,7 +62,9 @@ def respond():
             url = "https://api.adorable.io/avatars/285/{}.png".format(text.strip())
             # reply with a photo to the name the user sent,
             # note that you can send photos by url and telegram will fetch it for you
-            bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
+            #bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
+            reply = ai.generate_smart_reply(text)
+            bot.sendMessage(chat_id=chat_id, text=reply, reply_to_message_id=msg_id)
         except Exception:
             # if things went wrong
             bot.sendMessage(chat_id=chat_id,
