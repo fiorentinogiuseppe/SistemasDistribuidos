@@ -11,7 +11,6 @@ sys.path.insert(1, '..')
 
 from telebot import credentials, ai
 import sentry_sdk
-from sentry_sdk.integrations.flask import FlaskIntegration
 
 global bot
 global TOKEN
@@ -20,8 +19,7 @@ URL = os.getenv('URL')
 bot = telegram.Bot(token=TOKEN)
 
 sentry_sdk.init(
-    dsn="https://c8a4639aa2cb4217a5a9c8de5e76e00e@o863874.ingest.sentry.io/5840018",
-    integrations=[FlaskIntegration()],
+    "https://84b4fb75f0d248c1a3271b3f9c31141e@o863874.ingest.sentry.io/5840035",
 
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.
@@ -32,11 +30,10 @@ sentry_sdk.init(
 app = FastAPI()
 
 
-@app.post('/{}'.format(TOKEN))
+@app.api_route('/{}'.format(TOKEN), methods=['POST'])
 async def respond(request: Request):
-    print(request)
     body = await request.json()
-    event = request.headers.get("X-Github-Event")
+
     # retrieve the message in JSON and then transform it to Telegram object
     update = telegram.Update.de_json(body, bot)
 
