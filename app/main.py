@@ -1,7 +1,8 @@
 import os
-import random
 import re
-from flask import Flask, request
+from typing import Optional
+
+from fastapi import FastAPI, Request
 import telegram
 
 import sys
@@ -28,14 +29,16 @@ sentry_sdk.init(
     traces_sample_rate=1.0
 )
 
+app = FastAPI()
 
-app = Flask(__name__)
 
-
-@app.route('/{}'.format(TOKEN), methods=['POST'])
-def respond():
+@app.post('/{}'.format(TOKEN))
+async def respond(request: Request):
+    print(request)
+    body = await request.json()
+    event = request.headers.get("X-Github-Event")
     # retrieve the message in JSON and then transform it to Telegram object
-    update = telegram.Update.de_json(request.get_json(force=True), bot)
+    update = telegram.Update.de_json(body, bot)
 
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
@@ -52,8 +55,6 @@ def respond():
        """
         # send the welcoming message
         bot.sendMessage(chat_id=chat_id, text=bot_welcome, reply_to_message_id=msg_id)
-
-
     else:
         try:
             # clear the message we got from any non alphabets
@@ -62,7 +63,7 @@ def respond():
             url = "https://api.adorable.io/avatars/285/{}.png".format(text.strip())
             # reply with a photo to the name the user sent,
             # note that you can send photos by url and telegram will fetch it for you
-            #bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
+            # bot.sendPhoto(chat_id=chat_id, photo=url, reply_to_message_id=msg_id)
             reply = ai.generate_smart_reply(text)
             bot.sendMessage(chat_id=chat_id, text=reply, reply_to_message_id=msg_id)
         except Exception:
@@ -74,7 +75,7 @@ def respond():
     return 'ok'
 
 
-@app.route('/set_webhook', methods=['GET', 'POST'])
+@app.api_route("/webhook", methods=["GET", "POST"])
 def set_webhook():
     s = bot.setWebhook('{URL}{HOOK}'.format(URL=URL, HOOK=TOKEN))
     if s:
@@ -83,10 +84,6 @@ def set_webhook():
         return "webhook setup failed"
 
 
-@app.route('/')
+@app.get('/')
 def index():
-    return '.'
-
-
-if __name__ == '__main__':
-    app.run(threaded=True)
+    return {"Hello": "World"}
