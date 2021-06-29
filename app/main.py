@@ -9,6 +9,8 @@ sys.path.insert(1, '..')
 
 from telebot import credentials
 
+global bot
+global TOKEN
 TOKEN = os.getenv('BOT_TOKEN')
 URL = os.getenv('URL')
 bot = telegram.Bot(token=TOKEN)
